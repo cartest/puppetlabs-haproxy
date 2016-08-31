@@ -68,6 +68,11 @@
 #   resides. Will also be used for storing any managed map files (see
 #   `haproxy::mapfile`). Default depends on platform.
 #
+# [*validate_config*]
+#   Specifies whether the HAProxy config file should be validated 
+#   (using haproxy -f) before writing it to its destination.  
+#   Valid options: 'true' and 'false'.  Default: 'true'.
+#
 # === Examples
 #
 #  class { 'haproxy':
@@ -113,6 +118,7 @@ class haproxy (
   $config_dir        = $haproxy::params::config_dir,
   $config_file       = $haproxy::params::config_file,
   $manage_config_dir = $haproxy::params::manage_config_dir,
+  $validate_config   = true,
 
   # Deprecated
   $manage_service   = undef,
@@ -130,6 +136,7 @@ class haproxy (
   validate_string($service_options)
   validate_hash($global_options, $defaults_options)
   validate_absolute_path($config_dir)
+  validate_bool($validate_config)
 
   # NOTE: These deprecating parameters are implemented in this class,
   # not in haproxy::instance.  haproxy::instance is new and therefore

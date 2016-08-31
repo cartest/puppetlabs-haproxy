@@ -7,6 +7,7 @@ define haproxy::config (
   $config_dir = undef,  # A default is required for Puppet 2.7 compatibility. When 2.7 is no longer supported, this parameter default should be removed.
   $custom_fragment = undef,  # A default is required for Puppet 2.7 compatibility. When 2.7 is no longer supported, this parameter default should be removed.
   $merge_options = $haproxy::merge_options,
+  $validate_config = $haproxy::validate_config,
 ) {
 
   if $caller_module_name != $module_name {
@@ -39,11 +40,19 @@ define haproxy::config (
     $_config_file = $haproxy::config_file
   }
 
-  concat { $_config_file:
-    owner        => '0',
-    group        => '0',
-    mode         => '0644',
-    validate_cmd => '/usr/sbin/haproxy -f % -c',
+  if $validate_config {
+    concat { $_config_file:
+      owner        => '0',
+      group        => '0',
+      mode         => '0644',
+      validate_cmd => '/usr/sbin/haproxy -f % -c',
+    }
+  } else {
+    concat { $_config_file:
+      owner        => '0',
+      group        => '0',
+      mode         => '0644',
+    }
   }
 
   # Simple Header
